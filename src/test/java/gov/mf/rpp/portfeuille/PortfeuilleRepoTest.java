@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import gov.mf.rpp.portfeuille.rename.RenameRequest;
+
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -49,13 +51,12 @@ public class PortfeuilleRepoTest {
     @Test
     @Order(3)
     void test_renaming_case() {
-        portfeuilleQuery.rename("mfa", "mfad");
+        portfeuilleQuery.renamePortfeuille(new RenameRequest("mfa", "mfad"));
         var names = portfeuilleQuery.activePortfeuille().stream()
                 .map(Portfeuille::getName)
                 .toList();
         assertThat("it must contains mf, mjs, mfad", names, containsInAnyOrder("mf", "mjs", "mfad"));
         assertThat("it must not contain mfad", names, not(contains("mfa")));
-
     }
     
 }
