@@ -15,7 +15,7 @@ import jakarta.validation.Payload;
 @Retention(RUNTIME)
 @Documented
 public @interface ValidRenameRequest {
-  String message() default "End date must be after begin date and both must be in the future";
+  String message() default "Old name must exist and new name must not be already taken";
 
   Class<?>[] groups() default {};
 

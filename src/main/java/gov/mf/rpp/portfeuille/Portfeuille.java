@@ -29,7 +29,7 @@ public class Portfeuille {
 
     @Column(name = "portfeuille_status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private PortfeuilleStatus status;
+    private PortfeuilleStatus status = PortfeuilleStatus.ACTIVE;
 
 
     @Column(name = "portfeuille_orig_event", nullable = false)
