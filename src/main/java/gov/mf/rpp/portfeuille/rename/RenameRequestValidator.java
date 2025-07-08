@@ -13,8 +13,8 @@ public class RenameRequestValidator implements ConstraintValidator<ValidRenameRe
     @Override
     public boolean isValid(RenameRequest request, ConstraintValidatorContext context) {
         // TODO the old name must be s
-        return portfeuilleRepo.validPortfeuilleName(request.oldName()) &&
-                portfeuilleRepo.validPortfeuilleNewName(request.newName());
+        return portfeuilleRepo.validRenameTarget(request.oldName()) &&
+                portfeuilleRepo.validNewName(request.newName());
     }
 
 }

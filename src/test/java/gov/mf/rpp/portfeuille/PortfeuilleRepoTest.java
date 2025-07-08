@@ -40,7 +40,7 @@ public class PortfeuilleRepoTest {
     @Test
     @Order(2)
     void test_active_portfeuille() {
-        var names = portfeuilleQuery.activePortfeuille()
+        var names = portfeuilleQuery.relevantPortfeuilles()
                 .stream()
                 .map(Portfeuille::getName)
                 .toList();
@@ -52,7 +52,7 @@ public class PortfeuilleRepoTest {
     @Order(3)
     void test_renaming_case() {
         portfeuilleQuery.renamePortfeuille(new RenameRequest("mfa", "mfad"));
-        var names = portfeuilleQuery.activePortfeuille().stream()
+        var names = portfeuilleQuery.relevantPortfeuilles().stream()
                 .map(Portfeuille::getName)
                 .toList();
         assertThat("it must contains mf, mjs, mfad", names, containsInAnyOrder("mf", "mjs", "mfad"));

@@ -7,7 +7,6 @@ import org.hibernate.StatelessSession;
 
 import gov.mf.rpp.portfeuille.rename.RenameRequest;
 import gov.mf.rpp.portfeuille.rename.ValidRenameRequest;
-import gov.mf.rpp.portfeuille.split.PortfeuilleSplitRequest;
 import io.smallrye.common.constraint.NotNull;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -25,25 +24,25 @@ public interface PortfeuilleRepo {
     void createPortfeuille(Portfeuille namedPortfeuille);
 
     @Query("""
-            SELECT pf FROM Portfeuille pf
-            WHERE pf.active IS TRUE
+            select pf from Portfeuille as pf
+            where pf.status in (ACTIVE, EVOLVING)
                     """)
-    List<Portfeuille> activePortfeuille();
+    List<Portfeuille> relevantPortfeuilles();
 
-    @Query("SELECT pf FROM Portfeuille as pf WHERE pf.name = :name")
+    @Query("select pf from Portfeuille as pf where pf.name = :name")
     Optional<Portfeuille> portfeuilleByName(String name);
 
     @Query("""
-            SELECT CASE WHEN (count(f) = 1) THEN TRUE ELSE FALSE END
-            FROM Portfeuille f WHERE f.name = :oldName AND f.active IS TRUE
+            select case when (count(f) = 1) then true else false end
+            from Portfeuille f where f.name = :oldName and f.status = ACTIVE
                 """)
-    boolean validPortfeuilleName(String oldName);
+    boolean validRenameTarget(String oldName);
 
     @Query("""
-        SELECT CASE WHEN (count(f) = 0) THEN TRUE ELSE FALSE END
-        FROM Portfeuille f WHERE f.name = :newName AND f.active IS TRUE
+        select case when (count(f) = 0) then true else false end
+        from Portfeuille f where f.name = :newName and f.status = ACTIVE
             """)
-    boolean validPortfeuilleNewName(String newName);
+    boolean validNewName(String newName);
 
     //TODO!
     // create a query for checking:
@@ -52,7 +51,7 @@ public interface PortfeuilleRepo {
 
     public default Portfeuille renamePortfeuille(@Valid @NotNull @ValidRenameRequest RenameRequest renameRequest) {
         var portfeuille = portfeuilleByName(renameRequest.oldName()).orElseThrow();
-        portfeuille.setActive(false);
+        portfeuille.setStatus(PortfeuilleStatus.INACTIVE);
         var newPortfeuille = Portfeuille.of(renameRequest.newName(), portfeuille.getCode());
         newPortfeuille.addOriginatingSource(portfeuille);
         session().insert(newPortfeuille);
@@ -66,8 +65,8 @@ public interface PortfeuilleRepo {
     // Validation
     // set active to false for old portfeuille
     // for each portfeuilleRequest create new portfeuille
-    public default void split(@Valid @NotNull PortfeuilleSplitRequest portfeuilleSplitRequest) {
+    // public default void split(@Valid @NotNull PortfeuilleSplitRequest portfeuilleSplitRequest) {
 
-    }
+    // }
 
 }

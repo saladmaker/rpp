@@ -17,7 +17,6 @@ import jakarta.persistence.OneToMany;
 @Entity
 public class Portfeuille {
 
-    public static final String NAMED_PORTFEUILLE_FOR_LATEST_LEGAL_CHANGE = "selectNamedPortfeuilleForLatestLegalChange";
     @Id
     @GeneratedValue
     private Long id;
@@ -28,8 +27,9 @@ public class Portfeuille {
     @Column(name = "portfeuille_name", nullable = false)
     private String name;
 
-    @Column(name = "portfeuille_status")
-    private boolean active = true;
+    @Column(name = "portfeuille_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PortfeuilleStatus status;
 
 
     @Column(name = "portfeuille_orig_event", nullable = false)
@@ -71,15 +71,14 @@ public class Portfeuille {
 
     public void setName(String name) {
         this.name = name;
-    }
-    
+    }    
 
-    public boolean isActive() {
-        return active;
+    public PortfeuilleStatus getStatus() {
+        return status;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setStatus(PortfeuilleStatus portfeuilleStatus) {
+        this.status = portfeuilleStatus;
     }
 
     public LegalSourceType getOriginatingEvent() {
