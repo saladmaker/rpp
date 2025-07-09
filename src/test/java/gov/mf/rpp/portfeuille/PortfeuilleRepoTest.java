@@ -16,23 +16,38 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import org.hibernate.SessionFactory;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
 
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PortfeuilleRepoTest {
 
     @Inject
-    PortfeuilleRepo portfeuilleQuery;
+    PortfeuilleQueries portfeuilleQuery;
+    
+    @Inject
+    PortfeuilleRepo portfeuilleServie;
+    
+    @Inject
+    SessionFactory session;
+    
+    @BeforeAll
+    void setup(){
+        session.getSchemaManager().truncateMappedObjects();
+    }
 
     @Test
     @Order(1)
     void test_portfeuille_creation() {
-        Portfeuille mf = Portfeuille.of("mf", "007");
+        Portfeuille mf = Portfeuille.of("mf", "007",PortfeuilleStatus.ACTIVE);
         portfeuilleQuery.createPortfeuille(mf);
         assertThat("portfeuille id must not be null", mf.getId(), notNullValue());
 
-        Portfeuille mjs = Portfeuille.of("mjs", "021");
-        Portfeuille mfa = Portfeuille.of("mfa", "022");
+        Portfeuille mjs = Portfeuille.of("mjs", "021", PortfeuilleStatus.ACTIVE);
+        Portfeuille mfa = Portfeuille.of("mfa", "022", PortfeuilleStatus.ACTIVE);
         portfeuilleQuery.createPortfeuille(mjs);
         portfeuilleQuery.createPortfeuille(mfa);
 
@@ -52,7 +67,7 @@ public class PortfeuilleRepoTest {
     @Test
     @Order(3)
     void test_renaming_case() {
-        portfeuilleQuery.renamePortfeuille(new RenameRequest("mfa", "mfad"));
+        portfeuilleServie.renamePortfeuille(new RenameRequest("mfa", "mfad"));
         var names = portfeuilleQuery.relevantPortfeuilles().stream()
                 .map(Portfeuille::getName)
                 .toList();

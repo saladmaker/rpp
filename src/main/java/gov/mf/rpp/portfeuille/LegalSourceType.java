@@ -1,14 +1,30 @@
 package gov.mf.rpp.portfeuille;
+
 /**
- * legal source type for a given portfeuille
- * {@link #CREATION} a Portfeuille that has no parent
- * {@link #RENAMING} a Portfeuille that has a parent {@link gov.mf.rpp.portfeuille.Portfeuille} Portfeuille with a different name
- * {@link #SPLITTING} a Portfeuille that's the result of splitting a parent {@link gov.mf.rpp.portfeuille.Portfeuille} portfeuille
- * {@link #MERGING} a Portfeuille that's the result of merging {@link gov.mf.rpp.portfeuille.Portfeuille} portfeuilles
+ * Represents the type of legal source that affects a {@code Portefeuille} (ministry or institution).
+ * This is used to track how a {@code Portefeuille} has been established or changed over time
+ * through various legal actions.
  */
 public enum LegalSourceType {
+
+    /**
+     * Indicates that the {@code Portefeuille} was created as a new entity.
+     */
     CREATION,
+
+    /**
+     * Indicates that the {@code Portefeuille} was renamed from an existing one.
+     */
     RENAMING,
+
+    /**
+     * Indicates that the {@code Portefeuille} was formed by splitting an existing one into multiple new ones.
+     */
     SPLITTING,
+
+    /**
+     * Indicates that the {@code Portefeuille} was formed by merging two or more existing ones.
+     */
     MERGING;
 }
+
