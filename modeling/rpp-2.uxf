@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>80</x>
+      <y>400</y>
+      <w>310</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Mf: Portfeuille
+--
+bg=green
+id: Long="36548"
+code: String="007"
+status: PortfeuilleStatus=ACTIVE 
+originatingEvent: LegalSourceType=CREATION
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>40</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mfa: Portfeuille
+--
+bg=red
+id: Long="36549"
+code: String="009"
+status: PortfeuilleStatus=INACTIVE
+originatingEvent: LegalSourceType=CREATION
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>800</x>
+      <y>40</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mjs: Portfeuille
+--
+bg=yellow
+id: Long="36550"
+code: String="021"
+status: PortfeuilleStatus=Evolving
+originatingEvent: LegalSourceType=CREATION 
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>240</y>
+      <w>330</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>Mfad: Portfeuille
+--
+bg=green
+id: Long="36551"
+code: String="009"
+status: PortfeuilleStatus=ACTIVE
+originatingEvent: LegalSourceType=Renaming</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>740</x>
+      <y>230</y>
+      <w>320</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>Ms: Portfeuille
+--
+bg=blue
+id: Long="365552"
+code: String="022"
+status: PortfeuilleStatus=INCUBATING
+originatingEvent: LegalSourceType=SPLITTING
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>230</y>
+      <w>310</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Mj: Portfeuille
+--
+bg=blue
+id: Long="365553"
+code: String="023"
+status: PortfeuilleStatus=INCUBATING
+originatingEvent: LegalSourceType=SPLITTING
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>520</x>
+      <y>150</y>
+      <w>30</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>840</x>
+      <y>150</y>
+      <w>60</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>40.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1020</x>
+      <y>150</y>
+      <w>110</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;90.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>30</x>
+      <y>360</y>
+      <w>1410</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10.0;20.0;1390.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>40</y>
+      <w>310</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Mf: Portfeuille
+--
+bg=green
+id: Long="36548"
+code: String="007"
+status: PortfeuilleStatus=ACTIVE 
+originatingEvent: LegalSourceType=CREATION
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>480</x>
+      <y>400</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mfa: Portfeuille
+--
+bg=red
+id: Long="36549"
+code: String="009"
+status: PortfeuilleStatus=INACTIVE
+originatingEvent: LegalSourceType=CREATION
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>880</x>
+      <y>400</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mjs: Portfeuille
+--
+bg=red
+id: Long="36550"
+code: String="021"
+status: PortfeuilleStatus=INACTIVE
+originatingEvent: LegalSourceType=CREATION 
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>580</y>
+      <w>330</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>Mfad: Portfeuille
+--
+bg=green
+id: Long="36551"
+code: String="009"
+status: PortfeuilleStatus=ACTIVE
+originatingEvent: LegalSourceType=RENAMING</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>840</x>
+      <y>570</y>
+      <w>320</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>Ms: Portfeuille
+--
+bg=green
+id: Long="365552"
+code: String="022"
+status: PortfeuilleStatus=ACTIVE
+originatingEvent: LegalSourceType=SPLITTING
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1190</x>
+      <y>570</y>
+      <w>320</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mj: Portfeuille
+--
+bg=green
+id: Long="365553"
+code: String="023"
+status: PortfeuilleStatus=ACTIVE
+originatingEvent: LegalSourceType=SPLITTING
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>990</x>
+      <y>510</y>
+      <w>40</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>20.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1170</x>
+      <y>510</y>
+      <w>70</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;50.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>610</x>
+      <y>510</y>
+      <w>60</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;70.0</additional_attributes>
+  </element>
+</diagram>

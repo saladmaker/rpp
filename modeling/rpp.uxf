@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>170</x>
+      <y>40</y>
+      <w>310</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Mf: Portfeuille
+--
+bg=green
+id: Long="36548"
+code: String="007"
+status: PortfeuilleStatus=ACTIVE 
+originatingEvent: LegalSourceType=CREATION
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>520</x>
+      <y>60</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mfa: Portfeuille
+--
+bg=green
+id: Long="36549"
+code: String="009"
+status: PortfeuilleStatus=ACTIVE
+originatingEvent: LegalSourceType=CREATION
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>850</x>
+      <y>60</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mjs: Portfeuille
+--
+bg=green
+id: Long="36550"
+code: String="021"
+status: PortfeuilleStatus=ACTIVE
+originatingEvent: LegalSourceType=CREATION 
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>80</x>
+      <y>190</y>
+      <w>1410</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10.0;20.0;1390.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>540</x>
+      <y>390</y>
+      <w>330</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mfad: Portfeuille
+--
+bg=green
+id: Long="36551"
+code: String="009"
+status: PortfeuilleStatus=ACTIVE
+originatingEvent: LegalSourceType=RENAMING</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>600</x>
+      <y>340</y>
+      <w>50</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;30.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>140</x>
+      <y>530</y>
+      <w>1250</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10.0;20.0;1230.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>600</x>
+      <y>730</y>
+      <w>50</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>810</x>
+      <y>780</y>
+      <w>320</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>Ms: Portfeuille
+--
+bg=blue
+id: Long="365552"
+code: String="022"
+status: PortfeuilleStatus=INCUBATING
+originatingEvent: LegalSourceType=SPLITTING
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1160</x>
+      <y>780</y>
+      <w>320</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Mj: Portfeuille
+--
+bg=blue
+id: Long="365553"
+code: String="023"
+status: PortfeuilleStatus=INCUBATING
+originatingEvent: LegalSourceType=SPLITTING
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>890</x>
+      <y>720</y>
+      <w>70</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1040</x>
+      <y>720</y>
+      <w>180</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;160.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1210</x>
+      <y>60</y>
+      <w>140</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Note..
+bg=blue
+PortfeuilleStatus:
+-ACTIVE
+-INACTIVE
+-INCUBATING
+-EVOLVING</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1360</x>
+      <y>60</y>
+      <w>170</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>Note..
+bg=blue
+LegalSourceType
+-CREATION
+-RENAMING
+-SPLITTING
+-MERGING</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>540</x>
+      <y>230</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mfa: Portfeuille
+--
+bg=red
+id: Long="36549"
+code: String="009"
+status: PortfeuilleStatus=INACTIVE
+originatingEvent: LegalSourceType=CREATION
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>170</x>
+      <y>240</y>
+      <w>310</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Mf: Portfeuille
+--
+bg=green
+id: Long="36548"
+code: String="007"
+status: PortfeuilleStatus=ACTIVE 
+originatingEvent: LegalSourceType=CREATION
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>890</x>
+      <y>240</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mjs: Portfeuille
+--
+bg=green
+id: Long="36550"
+code: String="021"
+status: PortfeuilleStatus=ACTIVE
+originatingEvent: LegalSourceType=CREATION 
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>860</x>
+      <y>610</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mjs: Portfeuille
+--
+bg=yellow
+id: Long="36550"
+code: String="021"
+status: PortfeuilleStatus=EVOLVING
+originatingEvent: LegalSourceType=CREATION 
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>460</x>
+      <y>790</y>
+      <w>330</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>Mfad: Portfeuille
+--
+bg=green
+id: Long="36551"
+code: String="009"
+status: PortfeuilleStatus=ACTIVE
+originatingEvent: LegalSourceType=RENAMING</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>490</x>
+      <y>620</y>
+      <w>310</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Mfa: Portfeuille
+--
+bg=red
+id: Long="36549"
+code: String="009"
+status: PortfeuilleStatus=INACTIVE
+originatingEvent: LegalSourceType=CREATION
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>140</x>
+      <y>620</y>
+      <w>310</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Mf: Portfeuille
+--
+bg=green
+id: Long="36548"
+code: String="007"
+status: PortfeuilleStatus=ACTIVE 
+originatingEvent: LegalSourceType=CREATION
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
