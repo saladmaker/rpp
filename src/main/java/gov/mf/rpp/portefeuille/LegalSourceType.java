@@ -1,4 +1,4 @@
-package gov.mf.rpp.portfeuille;
+package gov.mf.rpp.portefeuille;
 
 /**
  * Represents the type of legal source that affects a {@code Portefeuille} (ministry or institution).

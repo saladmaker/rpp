@@ -1,4 +1,4 @@
-package gov.mf.rpp.portfeuille.rename;
+package gov.mf.rpp.portefeuille.movement.rename;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

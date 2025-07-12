@@ -1,4 +1,4 @@
-package gov.mf.rpp.portfeuille;
+package gov.mf.rpp.portefeuille;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 

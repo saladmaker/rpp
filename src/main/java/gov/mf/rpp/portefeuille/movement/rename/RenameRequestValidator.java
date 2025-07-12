@@ -1,21 +1,22 @@
-package gov.mf.rpp.portfeuille.rename;
+package gov.mf.rpp.portefeuille.movement.rename;
 
+import gov.mf.rpp.portefeuille.PortefeuilleRepo;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import gov.mf.rpp.portfeuille.PortfeuilleQueries;
 
 public class RenameRequestValidator implements ConstraintValidator<ValidRenameRequest, RenameRequest> {
 
     @Inject
-    PortfeuilleQueries portfeuilleRepo;
+    PortefeuilleRepo portefeuilleRepoe;
 
     @Override
     public boolean isValid(RenameRequest request, ConstraintValidatorContext context) {
         // TODO the old name must be s
-        return null != request
-                && portfeuilleRepo.validRenameTarget(request.oldName())
-                && portfeuilleRepo.validNewName(request.newName());
+        return portefeuilleRepoe.validRenameTarget(request.oldName())
+                && portefeuilleRepoe.validNewName(request.newName());
+        
+        
     }
 
 }
