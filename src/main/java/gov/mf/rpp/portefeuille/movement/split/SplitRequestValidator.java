@@ -9,7 +9,6 @@ import gov.mf.rpp.portefeuille.movement.create.CreateRequest;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import jakarta.validation.Validator;
 import java.util.HashSet;
 
 /**
@@ -20,10 +19,7 @@ public class SplitRequestValidator implements ConstraintValidator<ValidSplitRequ
 
     @Inject
     PortefeuilleMovement portefeuilleMovement;
-    
-    @Inject
-    Validator validator;
-    
+
     /**
      * check that request is not null //SA automatic
      * check that there's no null part //SA automatic

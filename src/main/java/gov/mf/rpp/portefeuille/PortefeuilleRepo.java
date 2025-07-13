@@ -66,7 +66,7 @@ public interface PortefeuilleRepo {
      * @return {@code true} if no active portefeuille with the same name or code exists; {@code false} otherwise
      */
     @Query("""
-           select case when (count(f) = 0) then true else false end
+           select case when (count(f) = 1) then true else false end
            from Portefeuille f
            where f.status = ACTIVE
            and f.name <> :parentName

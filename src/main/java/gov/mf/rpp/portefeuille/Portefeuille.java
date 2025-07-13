@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 /**
@@ -74,7 +75,7 @@ public class Portefeuille {
      * <p><b>Example:</b> If portefeuilles A and B were merged to form portefeuille C,
      * then A and B would be included in C’s {@code originatingPortefeuilles} set.</p>
      */
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         joinColumns = @JoinColumn(name = "portefeuille_target_id"),
         inverseJoinColumns = @JoinColumn(name = "portefeuille_source_id")

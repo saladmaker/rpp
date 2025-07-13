@@ -14,5 +14,4 @@ public record CreateRequest(
         @NotBlank String name,
         @NotBlank String code,
         @NotNull PortefeuilleStatus status) {
-
 }

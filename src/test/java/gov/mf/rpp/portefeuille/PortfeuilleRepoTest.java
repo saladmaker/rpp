@@ -7,11 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import gov.mf.rpp.portefeuille.movement.rename.RenameRequest;
+import gov.mf.rpp.portefeuille.movement.split.SplitRequest;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+
+import java.util.List;
+
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -120,8 +124,6 @@ public class PortfeuilleRepoTest {
         var noName = Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.renamePortefeuille(new RenameRequest("mfr", "fds"))
         );
-        noName.getConstraintViolations().stream()
-                .forEach(System.out::println);
         //inactive name
         Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.renamePortefeuille(new RenameRequest("mfa", "md"))
@@ -130,6 +132,69 @@ public class PortfeuilleRepoTest {
         Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.renamePortefeuille(new RenameRequest("mfad", "mf"))
         );
+
+    }
+
+    @Test
+    @Order(7)
+    void test_portefeuille_split() {
+        var splitRequest = new SplitRequest("mjs", "mj", "021", List.of(new CreateRequest("ms", "024", PortefeuilleStatus.ACTIVE)));
+        portefeuilleRules.split(splitRequest);
+
+        assertThat("mjs must be evolving",
+                portefeuilleRules.portefeuilleByName("mjs").map(Portefeuille::getStatus).orElseThrow(),
+                is(PortefeuilleStatus.EVOLVING));
+        var mj = portefeuilleRules.portefeuilleByNameWithOrigins("mj").orElseThrow();
+        assertThat("mj must be incubating",
+                mj.getStatus(),
+                is(PortefeuilleStatus.INCUBATING));
+
+        assertThat("mjs must be parent of mj",
+                mj.getOriginatingPortefeuilles().stream()
+                        .map(Portefeuille::getName)
+                        .toList(),
+                containsInAnyOrder("mjs")
+        );
+        var ms = portefeuilleRules.portefeuilleByNameWithOrigins("ms").orElseThrow();
+        assertThat("ms must be incubating",
+                ms.getStatus(),
+                is(PortefeuilleStatus.INCUBATING));
+
+        assertThat("mjs must be parent of ms",
+                ms.getOriginatingPortefeuilles().stream()
+                        .map(Portefeuille::getName)
+                        .toList(),
+                containsInAnyOrder("mjs")
+        );
+
+    }
+
+    @Test
+    @Order(8)
+    void test_portefeuille_split_validation() {
+        //null
+        var nullCase = Assertions.assertThrowsExactly(ValidationException.class,
+                () -> portefeuilleRules.split(null)
+        );
+        //null parent name
+        var nullParentName = Assertions.assertThrowsExactly(ValidationException.class,
+                () -> portefeuilleRules.split(new SplitRequest(null, "md", "021", List.of(new CreateRequest("mff", "22", PortefeuilleStatus.ACTIVE))))
+        );
+        
+        //null main name
+        var nullMainName = Assertions.assertThrowsExactly(ValidationException.class,
+                () -> portefeuilleRules.split(new SplitRequest("mf", null, "021", List.of(new CreateRequest("mff", "22", PortefeuilleStatus.ACTIVE))))
+        );
+        //null main code
+        var nullMainCode = Assertions.assertThrowsExactly(ValidationException.class,
+                () -> portefeuilleRules.split(new SplitRequest("mf", "mff", null, List.of(new CreateRequest("mff", "22", PortefeuilleStatus.ACTIVE))))
+        );
+        //null parts
+        var nullParts = Assertions.assertThrowsExactly(ValidationException.class,
+                () -> portefeuilleRules.split(new SplitRequest("mf", "mff", "22", null))
+        );
+        //inactive name
+
 
     }
 

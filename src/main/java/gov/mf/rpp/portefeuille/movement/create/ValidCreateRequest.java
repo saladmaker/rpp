@@ -23,9 +23,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ValidCreateRequest {
 
-    String message() default """
-                             create request's name and code must not be already taken
-                             """;
+    String message() default "create request's name and code must not be already taken";
 
     Class<?>[] groups() default {};
 

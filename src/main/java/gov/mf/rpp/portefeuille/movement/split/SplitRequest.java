@@ -17,6 +17,6 @@ public record SplitRequest(
         @NotBlank(message = "main part's name must not be blank") String mainName,
         @NotBlank(message = "main part's code must not be blank") String mainCode,
         @NotNull(message = "split parts must not be null")
-        @Size(min = 2, message = "there must be at least 2 or more parts")
+        @Size(min = 1, message = "there must be at least 2 or more parts")
         List<@ValidCreateRequest CreateRequest> parts) {   
 }

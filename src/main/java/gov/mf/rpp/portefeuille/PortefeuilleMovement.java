@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  *
@@ -92,13 +93,18 @@ public class PortefeuilleMovement {
      * @throws IllegalArgumentException if the original portefeuille is not
      * found or inactive
      */
-    public List<Portefeuille> split(@Valid @ValidSplitRequest SplitRequest request) {
+    public List<Portefeuille> split(@ValidSplitRequest SplitRequest request) {
         Portefeuille parent = repo.portefeuilleByName(request.name()).orElseThrow();
         parent.setStatus(PortefeuilleStatus.EVOLVING);
         repo.update(parent);
-        return request.parts().stream()
+        var mainRequest = new CreateRequest(request.mainName(), request.mainCode(), PortefeuilleStatus.ACTIVE);
+        
+        var main = ofSplit(mainRequest, parent);
+        var parts = request.parts().stream()
                 .map(p -> ofSplit(p, parent))
                 .toList();
+        return parts;
+
     }
     
     public boolean validSplitMain(String parentName, String mainName, String mainCode){
