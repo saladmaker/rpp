@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 
 @ValidCreateRequest
 public record CreateRequest(
-        @NotBlank String name,
-        @NotBlank String code,
-        @NotNull PortefeuilleStatus status) {
+        @NotBlank(message = "create request's old name must not be null or blank") String name,
+        @NotBlank(message = "create request's new name must not be null or blank") String code,
+        @NotNull(message = "create request's status must not be null") PortefeuilleStatus status) {
 }

@@ -1,32 +1,30 @@
 package gov.mf.rpp.portefeuille;
 
 import gov.mf.rpp.portefeuille.movement.create.CreateRequest;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-
 import gov.mf.rpp.portefeuille.movement.rename.RenameRequest;
 import gov.mf.rpp.portefeuille.movement.split.SplitRequest;
-
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-
-import java.util.List;
-
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
+import java.util.List;
+import java.util.stream.Collectors;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -65,7 +63,7 @@ public class PortfeuilleRepoTest {
     @Test
     @Order(2)
     void test_portefeuille_create_validation() {
-        var nex = Assertions.assertThrowsExactly(ValidationException.class,
+        var nex = Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.createPortefeuille(null)
         );
         Assertions.assertThrowsExactly(ConstraintViolationException.class,
@@ -78,7 +76,7 @@ public class PortfeuilleRepoTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     void test_active_portfeuille() {
         var names = portefeuilleRules.relevantPortefeuilles()
                 .stream()
@@ -89,7 +87,7 @@ public class PortfeuilleRepoTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     void test_portefeuille_renaming() {
         var mfad = portefeuilleRules.renamePortefeuille(new RenameRequest("mfa", "mfad"));
         assertThat("mfad must be of renaming legal source type", mfad.getOriginatingEvent(),
@@ -173,25 +171,72 @@ public class PortfeuilleRepoTest {
     @Order(8)
     void test_portefeuille_split_validation() {
         //null
-        var nullCase = Assertions.assertThrowsExactly(ValidationException.class,
+        var nullCase = Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.split(null)
         );
+        var nullCaseMessage = nullCase.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+        
+        
+        assertThat(
+                "message must say split request ...",
+                nullCaseMessage,
+                containsString("split request must not be null!")
+        );
         //null parent name
-        var nullParentName = Assertions.assertThrowsExactly(ValidationException.class,
+        var nullParentName = Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.split(new SplitRequest(null, "md", "021", List.of(new CreateRequest("mff", "22", PortefeuilleStatus.ACTIVE))))
         );
-        
+        var nullParentMessage = nullParentName.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+            
+        assertThat(
+                "it must contain parent's name must not be blank",
+                nullParentMessage,
+                containsString("parent's name must not be blank")
+        );
+         
         //null main name
-        var nullMainName = Assertions.assertThrowsExactly(ValidationException.class,
+        var nullMainName = Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.split(new SplitRequest("mf", null, "021", List.of(new CreateRequest("mff", "22", PortefeuilleStatus.ACTIVE))))
         );
+        var nullMainMessage = nullMainName.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+            
+        assertThat(
+                "it must contain main part's name must not be blank",
+                nullMainMessage,
+                containsString("main part's name must not be blank")
+        );
+        
         //null main code
-        var nullMainCode = Assertions.assertThrowsExactly(ValidationException.class,
+        var nullMainCode = Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.split(new SplitRequest("mf", "mff", null, List.of(new CreateRequest("mff", "22", PortefeuilleStatus.ACTIVE))))
         );
+        var nullMainCodeMessage = nullMainCode.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+            
+        assertThat(
+                "it must contain main part's code must not be blank",
+                nullMainCodeMessage,
+                containsString("main part's code must not be blank")
+        );
         //null parts
-        var nullParts = Assertions.assertThrowsExactly(ValidationException.class,
+        var nullParts = Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.split(new SplitRequest("mf", "mff", "22", null))
+        );
+        var nullPartsMessage = nullParts.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+            
+        assertThat(
+                "it must contain split parts must not be nul",
+                nullPartsMessage,
+                containsString("split parts must not be nul")
         );
         //inactive name
 

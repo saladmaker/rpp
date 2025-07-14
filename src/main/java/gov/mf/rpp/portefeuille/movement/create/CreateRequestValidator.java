@@ -16,6 +16,9 @@ public class CreateRequestValidator implements ConstraintValidator<ValidCreateRe
     
     @Override
     public boolean isValid(CreateRequest requestNew, ConstraintValidatorContext context) {
+        if(null == requestNew){
+            return true;
+        }
         return portefeuilleMovement.validNewPortefeuille(requestNew.name(), requestNew.code());
     }
     

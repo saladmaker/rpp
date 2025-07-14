@@ -13,7 +13,7 @@ import java.util.List;
  */
 @ValidSplitRequest
 public record SplitRequest(
-        @NotBlank(message = "parent must not be blank") String name,
+        @NotBlank(message = "parent's name must not be blank") String name,
         @NotBlank(message = "main part's name must not be blank") String mainName,
         @NotBlank(message = "main part's code must not be blank") String mainCode,
         @NotNull(message = "split parts must not be null")

@@ -1,4 +1,4 @@
-package gov.mf.rpp.portefeuille;
+ package gov.mf.rpp.portefeuille;
 
 import gov.mf.rpp.portefeuille.movement.create.CreateRequest;
 import gov.mf.rpp.portefeuille.movement.create.ValidCreateRequest;
@@ -93,7 +93,7 @@ public class PortefeuilleMovement {
      * @throws IllegalArgumentException if the original portefeuille is not
      * found or inactive
      */
-    public List<Portefeuille> split(@ValidSplitRequest SplitRequest request) {
+    public List<Portefeuille> split(@Valid @ValidSplitRequest SplitRequest request) {
         Portefeuille parent = repo.portefeuilleByName(request.name()).orElseThrow();
         parent.setStatus(PortefeuilleStatus.EVOLVING);
         repo.update(parent);
@@ -111,7 +111,7 @@ public class PortefeuilleMovement {
         return repo.validSplitMainPortefeuille(parentName, mainName, mainCode);
     }
 
-    public Optional<Portefeuille> portefeuilleByName(@NotBlank String name) {
+    public Optional<Portefeuille> portefeuilleByName(String name) {
         return repo.portefeuilleByName(name);
     }
 

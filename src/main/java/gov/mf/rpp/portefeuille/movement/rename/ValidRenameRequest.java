@@ -1,6 +1,8 @@
 package gov.mf.rpp.portefeuille.movement.rename;
 
 import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -11,9 +13,9 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.NotNull;
 
-@NotNull
+@NotNull(message = "rename request must not be null")
 @Constraint(validatedBy = RenameRequestValidator.class)
-@Target(PARAMETER)
+@Target({FIELD, PARAMETER, TYPE})
 @Retention(RUNTIME)
 @Documented
 public @interface ValidRenameRequest {
