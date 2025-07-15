@@ -51,7 +51,7 @@ public interface PortefeuilleRepo {
     @Query("""
            select case when (count(f) = 0) then true else false end
            from Portefeuille f
-           where f.status = ACTIVE
+           where f.status <> INACTIVE
            and (f.name = :name or f.code = :code)
            """)
     boolean validNewPortefeuille(String name, String code);
@@ -66,9 +66,13 @@ public interface PortefeuilleRepo {
      * @return {@code true} if no active portefeuille with the same name or code exists; {@code false} otherwise
      */
     @Query("""
-           select case when (count(f) = 1) then true else false end
+           select
+           case 
+            when (count(f) = 1) then true
+            else false
+           end
            from Portefeuille f
-           where f.status = ACTIVE
+           where f.status <> INACTIVE
            and f.name <> :parentName
            and (f.name = :mainName or f.code = :mainCode)
            """)

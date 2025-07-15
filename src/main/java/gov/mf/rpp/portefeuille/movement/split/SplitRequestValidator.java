@@ -5,7 +5,13 @@ import gov.mf.rpp.portefeuille.movement.create.CreateRequest;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Path;
+import jakarta.validation.metadata.ConstraintDescriptor;
 import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  *
@@ -26,30 +32,34 @@ public class SplitRequestValidator implements ConstraintValidator<ValidSplitRequ
      */
     @Override
     public boolean isValid(SplitRequest request, ConstraintValidatorContext context) {
-        if (null == request 
+        if (null == request
                 || (null == request.name())
                 || (null == request.mainCode())
                 || (null == request.mainName())
                 || (null == request.parts())) {
             return true;
         }
+
+        Set<ConstraintViolation<?>> violations = new HashSet<>();
+
         var parentPortefeuilleOpt = portefeuilleMovement.portefeuilleByName(request.name());
 
+        //valid target
         if (parentPortefeuilleOpt.isPresent()) {
+            //valid main
             if (portefeuilleMovement.validSplitMain(request.name(), request.mainName(), request.mainCode())) {
-                return false;
-            }
-            var names = request.parts().stream()
-                    .map(CreateRequest::name)
-                    .toList();
-            if (names.size() > new HashSet<>(names).size()) {
-                return false;
-            }
-            var codes = request.parts().stream()
-                    .map(CreateRequest::code)
-                    .toList();
-            if (codes.size() == new HashSet<>(codes).size()) {
-                return true;
+
+                var names = request.parts().stream()
+                        .map(CreateRequest::name)
+                        .toList();
+                if (names.size() == new HashSet<>(names).size()) {
+                    var codes = request.parts().stream()
+                            .map(CreateRequest::code)
+                            .toList();
+                    if (codes.size() == new HashSet<>(codes).size()) {
+                        return true;
+                    }
+                }
             }
         }
 

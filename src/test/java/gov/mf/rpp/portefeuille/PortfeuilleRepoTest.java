@@ -30,6 +30,18 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PortfeuilleRepoTest {
+    private static final String MF_NAME = "mf",
+            MF_CODE = "007",
+            MJS_NAME = "mjs",
+            MJS_CODE = "021",
+            MFA_NAME = "mfa",
+            MFA_CODE = "022",
+            MFAD_NAME = "mfad",
+            MFAD_CODE = "022",
+            MJ_NAME = "mj",
+            MJ_CODE = "021",
+            MS_NAME = "ms",
+            MS_CODE = "024";
 
     @Inject
     PortefeuilleMovement portefeuilleRules;
@@ -45,7 +57,7 @@ public class PortfeuilleRepoTest {
     @Test
     @Order(1)
     void test_portfeuille_creation() {
-        var mf = new CreateRequest("mf", "007", PortefeuilleStatus.ACTIVE);
+        var mf = new CreateRequest(MF_NAME, MF_CODE, PortefeuilleStatus.ACTIVE);
         portefeuilleRules.createPortefeuille(mf);
         assertThat("portfeuille id must not be null",
                 portefeuilleRules.portefeuilleByName("mf")
@@ -53,8 +65,8 @@ public class PortfeuilleRepoTest {
                         .orElseThrow(),
                 notNullValue());
 
-        var mjs = new CreateRequest("mjs", "021", PortefeuilleStatus.ACTIVE);
-        var mfa = new CreateRequest("mfa", "022", PortefeuilleStatus.ACTIVE);
+        var mjs = new CreateRequest(MJS_NAME, MJS_CODE, PortefeuilleStatus.ACTIVE);
+        var mfa = new CreateRequest(MFA_NAME, MFA_CODE, PortefeuilleStatus.ACTIVE);
         portefeuilleRules.createPortefeuille(mjs);
         portefeuilleRules.createPortefeuille(mfa);
 
@@ -238,7 +250,55 @@ public class PortfeuilleRepoTest {
                 nullPartsMessage,
                 containsString("split parts must not be nul")
         );
-        //inactive name
+
+        //inactive portfeuille
+        var inactivePortfeuilleName = Assertions.assertThrowsExactly(ConstraintViolationException.class,
+                () -> portefeuilleRules.split(new SplitRequest("fd", "mff", "22", List.of(new CreateRequest("ff", "3", PortefeuilleStatus.ACTIVE))))
+        );
+        var inactivePortfeuilleNameMessage = inactivePortfeuilleName.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+            
+        assertThat(
+                "it must contain split request must be valid",
+                inactivePortfeuilleNameMessage,
+                containsString("split request must be valid")
+        );
+        //main name existes
+        var mainNamesExistes = Assertions.assertThrowsExactly(ConstraintViolationException.class,
+                () -> portefeuilleRules.split(new SplitRequest("mf", MFAD_NAME, "22", List.of(new CreateRequest("ff", "3", PortefeuilleStatus.ACTIVE))))
+        );
+        var mainNamesExistesMessage = mainNamesExistes.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+            
+        assertThat(
+                "it must contain split request must be valid",
+                mainNamesExistesMessage,
+                containsString("split request must be valid")
+        );
+        
+        //main code existes
+        var mainCodeExistes = Assertions.assertThrowsExactly(ConstraintViolationException.class,
+                () -> portefeuilleRules.split(new SplitRequest("mf", "mfs", MJ_CODE, List.of(new CreateRequest("ff", "3", PortefeuilleStatus.ACTIVE))))
+        );
+        var mainCodeExistesMessage = mainCodeExistes.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+            
+        assertThat(
+                "it must contain split request must be valid",
+                mainCodeExistesMessage,
+                containsString("split request must be valid")
+        );
+        
+        //parts name duplicates
+        
+        //parts code duplicates 
+        
+        //parts code existes
+        
+        //parts name existes
 
 
     }
