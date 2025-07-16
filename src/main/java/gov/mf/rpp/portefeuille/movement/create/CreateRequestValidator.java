@@ -1,6 +1,7 @@
 package gov.mf.rpp.portefeuille.movement.create;
 
 import gov.mf.rpp.portefeuille.PortefeuilleMovement;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -9,6 +10,7 @@ import jakarta.validation.ConstraintValidatorContext;
  *
  * @author khaled
  */
+@ApplicationScoped
 public class CreateRequestValidator implements ConstraintValidator<ValidCreateRequest, CreateRequest>{
 
     @Inject

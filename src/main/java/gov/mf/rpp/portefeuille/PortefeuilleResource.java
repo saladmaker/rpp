@@ -4,10 +4,17 @@
  */
 package gov.mf.rpp.portefeuille;
 
+import gov.mf.rpp.portefeuille.movement.create.CreateRequest;
 import gov.mf.rpp.portefeuille.movement.split.SplitRequest;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.BeanParam;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -23,8 +30,17 @@ public class PortefeuilleResource {
     public PortefeuilleResource(PortefeuilleMovement portefeuilleMovement){
         this.portefeuilleMovement = portefeuilleMovement;
     }
-    public List<Portefeuille> split(@Valid SplitRequest request){
-        return portefeuilleMovement.split(request);
+    
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Portefeuille create(@Valid CreateRequest createRequest){
+        return portefeuilleMovement.createPortefeuille(createRequest);
+    }
+    
+    @GET
+    public String getM(){
+        return "dfs";
     }
     
 }

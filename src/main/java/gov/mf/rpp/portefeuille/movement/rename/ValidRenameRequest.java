@@ -11,9 +11,7 @@ import java.lang.annotation.Target;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotNull;
 
-@NotNull(message = "rename request must not be null")
 @Constraint(validatedBy = RenameRequestValidator.class)
 @Target({FIELD, PARAMETER, TYPE})
 @Retention(RUNTIME)

@@ -1,4 +1,4 @@
- package gov.mf.rpp.portefeuille;
+package gov.mf.rpp.portefeuille;
 
 import gov.mf.rpp.portefeuille.movement.create.CreateRequest;
 import gov.mf.rpp.portefeuille.movement.create.ValidCreateRequest;
@@ -6,14 +6,16 @@ import gov.mf.rpp.portefeuille.movement.rename.RenameRequest;
 import gov.mf.rpp.portefeuille.movement.rename.ValidRenameRequest;
 import gov.mf.rpp.portefeuille.movement.split.SplitRequest;
 import gov.mf.rpp.portefeuille.movement.split.ValidSplitRequest;
+import gov.mf.rpp.portefeuille.sanity.ValidationSequence;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  *
@@ -48,7 +50,15 @@ public class PortefeuilleMovement {
      * and code
      * @return the newly created {@code Portefeuille} entity
      */
-    public Portefeuille createPortefeuille(@Valid @ValidCreateRequest CreateRequest request) {
+    
+    public Portefeuille createPortefeuille(
+            @Valid
+            @ValidCreateRequest(groups = ValidationSequence.BusinessCheck.class)
+            @NotNull(
+                    message = "create request must not be null",
+                    groups = ValidationSequence.SanityCheck.class
+            ) CreateRequest request) {
+        System.out.println("###");
         var aNewPortefeuille = Portefeuille.of(request.name(), request.code(), request.status());
         return repo.createPortfeuille(aNewPortefeuille);
 
@@ -98,7 +108,7 @@ public class PortefeuilleMovement {
         parent.setStatus(PortefeuilleStatus.EVOLVING);
         repo.update(parent);
         var mainRequest = new CreateRequest(request.mainName(), request.mainCode(), PortefeuilleStatus.ACTIVE);
-        
+
         var main = ofSplit(mainRequest, parent);
         var parts = request.parts().stream()
                 .map(p -> ofSplit(p, parent))
@@ -106,8 +116,8 @@ public class PortefeuilleMovement {
         return parts;
 
     }
-    
-    public boolean validSplitMain(String parentName, String mainName, String mainCode){
+
+    public boolean validSplitMain(String parentName, String mainName, String mainCode) {
         return repo.validSplitMainPortefeuille(parentName, mainName, mainCode);
     }
 
@@ -126,11 +136,11 @@ public class PortefeuilleMovement {
 
     private Portefeuille ofSplit(CreateRequest request, Portefeuille parent) {
         Portefeuille portfeuille = Portefeuille.of(
-                        request.name(),
-                        request.code(),
-                        PortefeuilleStatus.INCUBATING
+                request.name(),
+                request.code(),
+                PortefeuilleStatus.INCUBATING
         );
-        
+
         portfeuille.setOriginatingEvent(LegalSourceType.SPLITTING);
         portfeuille.addOriginatingSource(parent);
         return repo.createPortfeuille(portfeuille);

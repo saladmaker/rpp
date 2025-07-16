@@ -35,10 +35,10 @@ public interface PortefeuilleRepo {
      * @return the persisted portefeuille
      */
     @Save
-    Portefeuille createPortfeuille(@NotNull Portefeuille portfeuille);
+    Portefeuille createPortfeuille(Portefeuille portfeuille);
     
     @Update
-    Portefeuille update(@NotNull Portefeuille portefeuille);
+    Portefeuille update(Portefeuille portefeuille);
 
     /**
      * Verifies whether a new portefeuille with the given name or code
@@ -49,7 +49,11 @@ public interface PortefeuilleRepo {
      * @return {@code true} if no active portefeuille with the same name or code exists; {@code false} otherwise
      */
     @Query("""
-           select case when (count(f) = 0) then true else false end
+           select
+           case
+            when (count(f) = 0) then true
+            else false
+           end
            from Portefeuille f
            where f.status <> INACTIVE
            and (f.name = :name or f.code = :code)
@@ -119,7 +123,11 @@ public interface PortefeuilleRepo {
      * @return {@code true} if an active portefeuille with the old name exists; {@code false} otherwise
      */
     @Query("""
-           select case when (count(f) = 1) then true else false end
+           select
+           case
+            when (count(f) = 1) then true
+            else false
+           end
            from Portefeuille f
            where f.name = :oldName and f.status = ACTIVE
            """)
@@ -132,7 +140,11 @@ public interface PortefeuilleRepo {
      * @return {@code true} if the name is available; {@code false} otherwise
      */
     @Query("""
-           select case when (count(f) = 0) then true else false end
+           select
+           case
+            when (count(f) = 0) then true 
+            else false
+           end
            from Portefeuille f
            where f.name = :newName and f.status = ACTIVE
            """)
