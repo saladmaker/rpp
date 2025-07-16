@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
  */
 
 @ValidCreateRequest
+@NotNull(message = "create request must not be null")
 public record CreateRequest(
         @NotBlank(message = "create request's old name must not be null or blank") String name,
         @NotBlank(message = "create request's new name must not be null or blank") String code,

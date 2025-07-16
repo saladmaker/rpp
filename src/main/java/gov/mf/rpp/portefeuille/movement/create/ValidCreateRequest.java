@@ -20,7 +20,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = CreateRequestValidator.class)
 @Target({FIELD, PARAMETER, TYPE, TYPE_USE})
 @Retention(RUNTIME)
-@NotNull(message = "create request must not be null")
 @Documented
 public @interface ValidCreateRequest {
 
