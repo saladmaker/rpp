@@ -18,7 +18,7 @@ import jakarta.validation.Payload;
 @Documented
 public @interface ValidRenameRequest {
     
-  String message() default "Old name must exist and new name must not be already taken";
+  String message() default "old name must be valid target and new name must not be already taken";
 
   Class<?>[] groups() default {};
 

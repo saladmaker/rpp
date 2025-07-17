@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
  *
  * @author khaled
  */
+@ValidCreateRequest(groups = ValidationSequence.BusinessCheck.class)
 public record CreateRequest(
         @NotBlank(message = "create request's old name must not be null or blank",
                 groups = ValidationSequence.SanityCheck.class)

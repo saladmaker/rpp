@@ -1,9 +1,7 @@
 package gov.mf.rpp.portefeuille.movement.create;
 
-import gov.mf.rpp.portefeuille.sanity.ValidationSequence;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotNull;
 import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.FIELD;

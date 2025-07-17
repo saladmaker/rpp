@@ -100,6 +100,18 @@ public class Portefeuille {
         newPortefeuille.setStatus(status);
         return newPortefeuille;
     }
+    
+    public static Portefeuille ofSplit(String name, String code) {
+        Objects.requireNonNull(name, "name must not be null");
+        Objects.requireNonNull(code, "code must not be null");
+
+        var newPortefeuille = new Portefeuille();
+        newPortefeuille.setName(name);
+        newPortefeuille.setCode(code);
+        newPortefeuille.setOriginatingEvent(LegalSourceType.SPLITTING);
+        newPortefeuille.setStatus(PortefeuilleStatus.INCUBATING);
+        return newPortefeuille;
+    }
 
     public Portefeuille() {}
 
@@ -112,6 +124,7 @@ public class Portefeuille {
     }
 
     public void setCode(String code) {
+        Objects.requireNonNull(code, "code must not be null");
         this.code = code;
     }
 
@@ -120,6 +133,8 @@ public class Portefeuille {
     }
 
     public void setName(String name) {
+        
+        Objects.requireNonNull(name, "name must not be null");
         this.name = name;
     }
 
@@ -136,6 +151,7 @@ public class Portefeuille {
     }
 
     public void setOriginatingEvent(LegalSourceType originatingEvent) {
+        Objects.requireNonNull(originatingEvent, "originating event must not be null");
         this.originatingEvent = originatingEvent;
     }
 
@@ -150,6 +166,8 @@ public class Portefeuille {
      * @param source the portefeuille that contributed to the formation of this one
      */
     public void addOriginatingSource(Portefeuille source) {
+        
+        Objects.requireNonNull(source, "originating portefeuille must not be null");
         originatingPortefeuilles.add(source);
     }
 
@@ -159,6 +177,7 @@ public class Portefeuille {
      * @param source the portefeuille to remove
      */
     public void removeOriginatingSource(Portefeuille source) {
+        Objects.requireNonNull(source, "originating portefeuille must not be null");
         originatingPortefeuilles.remove(source);
     }
 }

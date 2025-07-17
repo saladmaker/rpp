@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Documented
 public @interface ValidSplitRequest {
-    
+
     String message() default "split request must be valid";
 
     Class<?>[] groups() default {};

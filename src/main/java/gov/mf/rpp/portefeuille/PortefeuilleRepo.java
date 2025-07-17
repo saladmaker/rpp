@@ -10,7 +10,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
-import jakarta.validation.constraints.NotNull;
+import java.util.Set;
 
 /**
  * Repository interface for managing {@link Portefeuille} entities.
@@ -72,7 +72,7 @@ public interface PortefeuilleRepo {
     @Query("""
            select
            case 
-            when (count(f) = 1) then true
+            when (count(f) = 0) then true
             else false
            end
            from Portefeuille f
@@ -80,7 +80,7 @@ public interface PortefeuilleRepo {
            and f.name <> :parentName
            and (f.name = :mainName or f.code = :mainCode)
            """)
-    boolean validSplitMainPortefeuille(String parentName, String mainName, String mainCode);
+    boolean validSplitMainPart(String parentName, String mainName, String mainCode);
 
     /**
      * Retrieves a list of portefeuilles considered relevant in the current legal context.
@@ -100,7 +100,10 @@ public interface PortefeuilleRepo {
      * @param name the portefeuille name
      * @return an {@link Optional} containing the portefeuille if found; otherwise empty
      */
-    @Query("select pf from Portefeuille as pf where pf.name = :name")
+    @Query("""
+           select pf from Portefeuille as pf
+           where pf.name = :name
+           """)
     Optional<Portefeuille> portefeuilleByName(String name);
 
     /**
@@ -110,7 +113,8 @@ public interface PortefeuilleRepo {
      * @return an {@link Optional} containing the portefeuille with its origins; otherwise empty
      */
     @Query("""
-           select pf from Portefeuille as pf join fetch pf.originatingPortefeuilles opf
+           select pf from Portefeuille as pf
+           join fetch pf.originatingPortefeuilles opf
            where pf.name = :name
            """)
     Optional<Portefeuille> portefeuilleByNameWithOrigins(String name);
@@ -131,7 +135,7 @@ public interface PortefeuilleRepo {
            from Portefeuille f
            where f.name = :oldName and f.status = ACTIVE
            """)
-    boolean validRenameTarget(String oldName);
+    boolean activePortefeuille(String oldName);
 
     /**
      * Checks if a proposed new name is not already used by another active portefeuille.
@@ -148,6 +152,19 @@ public interface PortefeuilleRepo {
            from Portefeuille f
            where f.name = :newName and f.status = ACTIVE
            """)
-    boolean validNewName(String newName);
+    boolean validRename(String newName);
+    
+    @Query("""
+           select
+            case
+                when (count(f) = 0) then true
+                else false
+            end
+           from Portefeuille as f
+           where f.status <> INACTIVE and
+           (f.name in :names or
+            f.code in :codes)
+           """)
+    boolean validParts(Set<String> names, Set<String> codes);
 
 }
