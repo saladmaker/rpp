@@ -3,3 +3,6 @@ TODO! redo @save to allow for complex operation or clarify how should that task 
 TODO! it looks like @Valid is needed for validating whole object's state
 TODO! through look at validation and check for cohesive and sound approach
 TODO! constraint order & groups, validation cascading according to business rules.
+TODO! we should split validation through services
+        sanitychecks first(rest api)
+        business last(boundary)

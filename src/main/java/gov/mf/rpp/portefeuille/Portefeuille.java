@@ -24,7 +24,7 @@ import jakarta.persistence.ManyToMany;
  * is maintained using {@link PortefeuilleStatus}, allowing full historical tracking and traceability.</p>
  * 
  * <p>The {@link LegalSourceType} describes the legal event that led to the creation or transformation 
- * of this portefeuille (e.g., through creation, merging, or splitting).</p>
+ * of this portefeuille (e.g., creation, merging, or splitting).</p>
  * 
  * <p>Relationships to origin portefeuilles are maintained to preserve lineage and trace the history 
  * of structural transformations (e.g., when a portefeuille is formed by merging others).</p>
@@ -71,7 +71,7 @@ public class Portefeuille {
      * The set of portefeuilles that are the legal origin of this portefeuille.
      * This is relevant in cases of merging or splitting, where multiple parent portefeuilles may exist.
      * 
-     * <p><b>Example:</b> If portefeuilles A and B were merged to form portefeuille C,
+     * <p><b>Example:</b> If portefeuilles A and B are merged to form portefeuille C,
      * then A and B would be included in C’s {@code originatingPortefeuilles} set.</p>
      */
     @ManyToMany(fetch = FetchType.LAZY)
@@ -100,7 +100,14 @@ public class Portefeuille {
         newPortefeuille.setStatus(status);
         return newPortefeuille;
     }
-    
+
+    /**
+     * Factory method to create a new portefeuille as the result of a split.
+     * 
+     * @param name the name of the new portefeuille
+     * @param code the official code of the new portefeuille
+     * @return a new {@code Portefeuille} instance marked as {@code INCUBATING} and created by {@code SPLITTING}
+     */
     public static Portefeuille ofSplit(String name, String code) {
         Objects.requireNonNull(name, "name must not be null");
         Objects.requireNonNull(code, "code must not be null");
@@ -133,7 +140,6 @@ public class Portefeuille {
     }
 
     public void setName(String name) {
-        
         Objects.requireNonNull(name, "name must not be null");
         this.name = name;
     }
@@ -143,6 +149,7 @@ public class Portefeuille {
     }
 
     public void setStatus(PortefeuilleStatus status) {
+        Objects.requireNonNull(status, "status must not be null");
         this.status = status;
     }
 
@@ -166,7 +173,6 @@ public class Portefeuille {
      * @param source the portefeuille that contributed to the formation of this one
      */
     public void addOriginatingSource(Portefeuille source) {
-        
         Objects.requireNonNull(source, "originating portefeuille must not be null");
         originatingPortefeuilles.add(source);
     }

@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,17 +123,20 @@ public class PortefeuilleMovement {
         return repo.portefeuilleByNameWithOrigins(name);
     }
 
-    public List<Portefeuille> relevantPortefeuilles() {
-        return repo.relevantPortefeuilles();
+    public List<Portefeuille> relevantPortefeuilles(EnumSet<PortefeuilleStatus> statuses) {
+        return repo.relevantPortefeuilles(statuses);
     }
 
+    public List<String> relevantPortefeuilleNames(EnumSet<PortefeuilleStatus> statuses){
+        return repo.relevantPortefeuilleNames(statuses);
+    }
     private Portefeuille ofSplit(Part request, Portefeuille parent) {
-        Portefeuille portfeuille = Portefeuille.ofSplit(
+        Portefeuille portefeuille = Portefeuille.ofSplit(
                 request.name(),
                 request.code()
         );
-        portfeuille.addOriginatingSource(parent);
-        return repo.createPortfeuille(portfeuille);
+        portefeuille.addOriginatingSource(parent);
+        return repo.createPortfeuille(portefeuille);
 
     }
 }

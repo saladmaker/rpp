@@ -9,7 +9,9 @@ import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Set;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -39,7 +41,6 @@ public class PortfeuilleRepoTest {
             MFA_NAME = "mfa",
             MFA_CODE = "022",
             MFAD_NAME = "mfad",
-            MFAD_CODE = "022",
             MJ_NAME = "mj",
             MJ_CODE = "021",
             MS_NAME = "ms",
@@ -85,46 +86,52 @@ public class PortfeuilleRepoTest {
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining());
         assertThat(
-                "it must contain message",
+                "it must message exact message...",
                 nullParamMessage,
                 containsString("create request must not be null")
         );
 
         //null name
         var nullNameEx = Assertions.assertThrowsExactly(ConstraintViolationException.class,
-                () -> portefeuilleRules.createPortefeuille(new CreateRequest(null, "212", PortefeuilleStatus.ACTIVE))
+                () -> portefeuilleRules.createPortefeuille(
+                        new CreateRequest(null, "212", PortefeuilleStatus.ACTIVE)
+                )
         );
         var nullNameMessage = nullNameEx.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining());
         assertThat(
-                "it must contain message",
+                "it must message exact message...",
                 nullNameMessage,
                 containsString("create request's old name must not be null or blank")
         );
 
         //null code
         var nullCodeEx = Assertions.assertThrowsExactly(ConstraintViolationException.class,
-                () -> portefeuilleRules.createPortefeuille(new CreateRequest("df", null, PortefeuilleStatus.ACTIVE))
+                () -> portefeuilleRules.createPortefeuille(
+                        new CreateRequest("df", null, PortefeuilleStatus.ACTIVE)
+                )
         );
         var nullCodeMessage = nullCodeEx.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining());
         assertThat(
-                "it must contain message",
+                "it must message exact message...",
                 nullCodeMessage,
                 containsString("create request's new name must not be null or blank")
         );
 
         //existing name
         var exsitingNameEx = Assertions.assertThrowsExactly(ConstraintViolationException.class,
-                () -> portefeuilleRules.createPortefeuille(new CreateRequest(MFA_NAME, "323", PortefeuilleStatus.ACTIVE))
+                () -> portefeuilleRules.createPortefeuille(
+                        new CreateRequest(MFA_NAME, "323", PortefeuilleStatus.ACTIVE)
+                )
         );
         var existingNameMessage = exsitingNameEx.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining());
         assertThat(
-                "it must contain message",
+                "it must message exact message...",
                 existingNameMessage,
                 containsString("create request's name and code must not be already taken")
         );
@@ -134,11 +141,8 @@ public class PortfeuilleRepoTest {
     @Test
     @Order(3)
     void test_active_portfeuille() {
-        var names = portefeuilleRules.relevantPortefeuilles()
-                .stream()
-                .map(Portefeuille::getName)
-                .toList();
-        
+        var names = portefeuilleRules.relevantPortefeuilleNames(EnumSet.of(PortefeuilleStatus.ACTIVE));
+
         assertThat(
                 "it must contains mf, mjs, mfa",
                 names,
@@ -153,9 +157,7 @@ public class PortfeuilleRepoTest {
         var mfad = portefeuilleRules.renamePortefeuille(new RenameRequest(MFA_NAME, MFAD_NAME));
         assertThat("mfad must be of renaming legal source type", mfad.getOriginatingEvent(),
                 is(LegalSourceType.RENAMING));
-        var names = portefeuilleRules.relevantPortefeuilles().stream()
-                .map(Portefeuille::getName)
-                .toList();
+        var names = portefeuilleRules.relevantPortefeuilleNames(EnumSet.of(PortefeuilleStatus.ACTIVE));
 
         assertThat(
                 "it must contains mf, mjs, mfad",
@@ -167,7 +169,8 @@ public class PortfeuilleRepoTest {
 
         assertThat(
                 "mfa must be inactive",
-                portefeuilleRules.portefeuilleByName(MFA_NAME).map(Portefeuille::getStatus).orElseThrow(),
+                portefeuilleRules.portefeuilleByName(MFA_NAME)
+                        .map(Portefeuille::getStatus).orElseThrow(),
                 is(PortefeuilleStatus.INACTIVE)
         );
 
@@ -191,7 +194,7 @@ public class PortfeuilleRepoTest {
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining());
         assertThat(
-                "it must contain message",
+                "it must message exact message...",
                 nullMessage,
                 containsString("rename request must not be null")
         );
@@ -204,7 +207,7 @@ public class PortfeuilleRepoTest {
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining());
         assertThat(
-                "it must contain message",
+                "it must message exact message...",
                 nullNameMessage,
                 containsString("rename request's old name must not be null or blank")
         );
@@ -217,7 +220,7 @@ public class PortfeuilleRepoTest {
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining());
         assertThat(
-                "it must contain message",
+                "it must message exact message...",
                 notValidTargetMessage,
                 containsString("old name must be valid target and new name must not be already taken")
         );
@@ -230,7 +233,7 @@ public class PortfeuilleRepoTest {
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining());
         assertThat(
-                "it must contain message",
+                "it must message exact message...",
                 takenNameMessage,
                 containsString("old name must be valid target and new name must not be already taken")
         );
@@ -253,33 +256,52 @@ public class PortfeuilleRepoTest {
     @Test
     @Order(7)
     void test_portefeuille_split() {
-        var splitRequest = new SplitRequest(MJS_NAME, MJ_NAME, MJ_CODE, List.of(new Part(MS_NAME, MS_CODE)));
+        var splitRequest = new SplitRequest(
+                MJS_NAME, MJ_NAME, MJ_CODE,
+                List.of(new Part(MS_NAME, MS_CODE))
+        );
         portefeuilleRules.split(splitRequest);
 
-        assertThat("mjs must be evolving",
-                portefeuilleRules.portefeuilleByName("mjs").map(Portefeuille::getStatus).orElseThrow(),
-                is(PortefeuilleStatus.EVOLVING));
+        assertThat(
+                "mjs must be evolving",
+                portefeuilleRules.portefeuilleByName("mjs")
+                        .map(Portefeuille::getStatus)
+                        .orElseThrow(),
+                is(PortefeuilleStatus.EVOLVING)
+        );
 
-        var mj = portefeuilleRules.portefeuilleByNameWithOrigins(MJ_NAME).orElseThrow();
+        var mj = portefeuilleRules.portefeuilleByNameWithOrigins(MJ_NAME)
+                .orElseThrow();
+
         assertThat("mj must be incubating",
                 mj.getStatus(),
                 is(PortefeuilleStatus.INCUBATING));
 
         assertThat("mjs must be parent of mj",
-                mj.getOriginatingPortefeuilles().stream()
+                mj.getOriginatingPortefeuilles()
+                        .stream()
                         .map(Portefeuille::getName)
                         .toList(),
                 containsInAnyOrder(MJS_NAME)
         );
-        var ms = portefeuilleRules.portefeuilleByNameWithOrigins(MS_NAME).orElseThrow();
+        var ms = portefeuilleRules.portefeuilleByNameWithOrigins(MS_NAME)
+                .orElseThrow();
         assertThat("ms must be incubating", ms.getStatus(), is(PortefeuilleStatus.INCUBATING));
 
         assertThat("mjs must be parent of ms",
-                ms.getOriginatingPortefeuilles().stream()
+                ms.getOriginatingPortefeuilles()
+                        .stream()
                         .map(Portefeuille::getName)
                         .toList(),
                 containsInAnyOrder(MJS_NAME)
         );
+        
+        var evolvings = portefeuilleRules.relevantPortefeuilleNames(EnumSet.of(PortefeuilleStatus.EVOLVING));
+
+        assertThat("it must contain MJS", evolvings, containsInAnyOrder(MJS_NAME));
+        
+        var incubatings = portefeuilleRules.relevantPortefeuilleNames(EnumSet.of(PortefeuilleStatus.INCUBATING));
+        assertThat("it must contain MJS", incubatings, containsInAnyOrder(MJ_NAME, MS_NAME));
 
     }
 
@@ -295,7 +317,7 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "message must say split request ...",
+                "it must message exact message...",
                 nullCaseMessage,
                 containsString("split request must not be null")
         );
@@ -303,14 +325,17 @@ public class PortfeuilleRepoTest {
         //null parent name
         var nullParentName = Assertions.assertThrowsExactly(
                 ConstraintViolationException.class,
-                () -> portefeuilleRules.split(new SplitRequest(null, "md", "021", List.of(new Part("mff", "22"))))
+                () -> portefeuilleRules.split(
+                        new SplitRequest(null, "md", "021",
+                                List.of(new Part("mff", "22")))
+                )
         );
         var nullParentMessage = nullParentName.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain parent's name must not be blank",
+                "it must message exact message...",
                 nullParentMessage,
                 containsString("parent's name must not be blank")
         );
@@ -324,7 +349,7 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain main part's name must not be blank",
+                "it must message exact message...",
                 nullMainMessage,
                 containsString("main part's name must not be blank")
         );
@@ -338,7 +363,7 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain main part's code must not be blank",
+                "it must message exact message...",
                 nullMainCodeMessage,
                 containsString("main part's code must not be blank")
         );
@@ -351,7 +376,7 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain split parts must not be nul",
+                "it must message exact message...",
                 nullPartsMessage,
                 containsString("split parts must not be nul")
         );
@@ -365,7 +390,7 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain split parts must not be nul",
+                "it must message exact message...",
                 emptyPartsMessage,
                 containsString("there must be at least one part")
         );
@@ -379,7 +404,7 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain message",
+                "it must message exact message...",
                 nullPartMessage,
                 containsString("part must not be null")
         );
@@ -394,11 +419,11 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain main part's code must not be blank",
+                "it must message exact message...",
                 nullpartCodeMessage,
                 containsString("part's code must not be null or blank")
         );
-        
+
     }
 
     @Test
@@ -414,7 +439,7 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain split request must be valid",
+                "it must message exact message...",
                 inactivePortfeuilleNameMessage,
                 containsString("split request must be valid")
         );
@@ -427,7 +452,7 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain split request must be valid",
+                "it must message exact message...",
                 mainNamesExistesMessage,
                 containsString("split request must be valid")
         );
@@ -441,12 +466,11 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain split request must be valid",
+                "it must message exact message...",
                 mainCodeExistesMessage,
                 containsString("split request must be valid")
         );
-        
-        
+
         //    parts name duplicates
         Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.split(new SplitRequest(MF_NAME, MF_NAME, MF_CODE, List.of(new Part("ff", "3"), new Part("ff", "4"))))
@@ -459,12 +483,11 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain split request must be valid",
+                "it must message exact message...",
                 partCodeDuplicatesMessage,
                 containsString("split request must be valid")
         );
-        
-        
+
         //    parts code/name existes
         Assertions.assertThrowsExactly(ConstraintViolationException.class,
                 () -> portefeuilleRules.split(new SplitRequest(MF_NAME, "mfs", "d", List.of(new Part("fsdf", MJ_CODE))))
@@ -477,7 +500,7 @@ public class PortfeuilleRepoTest {
                 .collect(Collectors.joining());
 
         assertThat(
-                "it must contain split request must be valid",
+                "it must message exact message...",
                 partexistMessage,
                 containsString("split request must be valid")
         );
