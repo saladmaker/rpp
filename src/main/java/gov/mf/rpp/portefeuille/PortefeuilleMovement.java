@@ -1,9 +1,12 @@
 package gov.mf.rpp.portefeuille;
 
 import gov.mf.rpp.portefeuille.movement.create.CreateRequest;
+import gov.mf.rpp.portefeuille.movement.create.ValidCreateRequest;
 import gov.mf.rpp.portefeuille.movement.rename.RenameRequest;
+import gov.mf.rpp.portefeuille.movement.rename.ValidRenameRequest;
 import gov.mf.rpp.portefeuille.movement.split.Part;
 import gov.mf.rpp.portefeuille.movement.split.SplitRequest;
+import gov.mf.rpp.portefeuille.movement.split.ValidSplitRequest;
 import gov.mf.rpp.portefeuille.sanity.ValidationSequence;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -46,20 +49,14 @@ public class PortefeuilleMovement {
      * and code
      * @return the newly created {@code Portefeuille} entity
      */
-    public Portefeuille createPortefeuille(
-            @Valid
-            @ConvertGroup(from = Default.class, to = ValidationSequence.class)
-            @NotNull(message = "create request must not be null") CreateRequest request) {
+    public Portefeuille createPortefeuille(@ValidCreateRequest CreateRequest request) {
 
         var aNewPortefeuille = Portefeuille.of(request.name(), request.code(), request.status());
         return repo.createPortfeuille(aNewPortefeuille);
 
     }
 
-    public Portefeuille renamePortefeuille(
-            @Valid
-            @ConvertGroup(from = Default.class, to = ValidationSequence.class)
-            @NotNull(message = "rename request must not be null") RenameRequest request) {
+    public CreateRequest renamePortefeuille(@ValidRenameRequest RenameRequest request) {
         var portefeuille = portefeuilleByName(request.oldName())
                 .orElseThrow();
 
@@ -74,7 +71,8 @@ public class PortefeuilleMovement {
 
         newPortefeuille.setOriginatingEvent(LegalSourceType.RENAMING);
         newPortefeuille.addOriginatingSource(portefeuille);
-        return repo.createPortfeuille(newPortefeuille);
+        repo.createPortfeuille(newPortefeuille);
+        return new CreateRequest(request.newName(), newPortefeuille.getCode(), PortefeuilleStatus.ACTIVE);
 
     }
 
@@ -97,10 +95,7 @@ public class PortefeuilleMovement {
      * @throws IllegalArgumentException if the original portefeuille is not
      * found or inactive
      */
-    public List<Portefeuille> split(
-            @Valid
-            @ConvertGroup(from = Default.class, to = ValidationSequence.class)
-            @NotNull(message = "split request must not be null") SplitRequest request) {
+    public List<Portefeuille> split(@ValidSplitRequest SplitRequest request) {
         Portefeuille parent = repo.portefeuilleByName(request.name()).orElseThrow();
         parent.setStatus(PortefeuilleStatus.EVOLVING);
         repo.update(parent);

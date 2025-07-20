@@ -4,12 +4,15 @@ import gov.mf.rpp.portefeuille.movement.create.CreateRequest;
 import gov.mf.rpp.portefeuille.movement.rename.RenameRequest;
 import gov.mf.rpp.portefeuille.movement.split.Part;
 import gov.mf.rpp.portefeuille.movement.split.SplitRequest;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
+import static io.restassured.RestAssured.given;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
-import java.util.Set;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.stream.Collectors;
@@ -18,6 +21,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import org.hibernate.SessionFactory;
@@ -29,10 +33,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
+//@Disabled("disabled unitl we fix rest assured")
 @QuarkusTest
+@TestHTTPEndpoint(Portefeuilles.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PortfeuilleRepoTest {
+public class PortefeuilllesTest {
 
     private static final String MF_NAME = "mf",
             MF_CODE = "007",
@@ -50,28 +56,47 @@ public class PortfeuilleRepoTest {
     PortefeuilleMovement portefeuilleRules;
 
     @Inject
+    Portefeuilles potefeuilles;
+
+    @Inject
     SessionFactory session;
+
+    
 
     @BeforeAll
     void setup() {
         session.getSchemaManager().truncateMappedObjects();
     }
-
+    
+    private static ValidatableResponse createPortefeuilleTest(Object body, int expectedStatus) {
+        return given()
+                .contentType(ContentType.JSON)
+                .body(body)
+                //.log().all()
+                .when()
+                .post("/create")
+                .then()
+                //.log().all()
+                .statusCode(expectedStatus);
+    }
+    
     @Test
     @Order(1)
     void test_portfeuille_creation() {
         var mf = new CreateRequest(MF_NAME, MF_CODE, PortefeuilleStatus.ACTIVE);
-        portefeuilleRules.createPortefeuille(mf);
-        assertThat("portfeuille id must not be null",
+        createPortefeuilleTest(mf, 200);
+        assertThat(
+                "portfeuille id must not be null",
                 portefeuilleRules.portefeuilleByName("mf")
                         .map(Portefeuille::getId)
                         .orElseThrow(),
-                notNullValue());
+                notNullValue()
+        );
 
         var mjs = new CreateRequest(MJS_NAME, MJS_CODE, PortefeuilleStatus.ACTIVE);
         var mfa = new CreateRequest(MFA_NAME, MFA_CODE, PortefeuilleStatus.ACTIVE);
-        portefeuilleRules.createPortefeuille(mjs);
-        portefeuilleRules.createPortefeuille(mfa);
+        createPortefeuilleTest(mjs, 200);
+        createPortefeuilleTest(mfa, 200);
 
     }
 
@@ -79,82 +104,62 @@ public class PortfeuilleRepoTest {
     @Order(2)
     void test_portefeuille_create_validation() {
         //null param
-        var nullParamEx = Assertions.assertThrowsExactly(ConstraintViolationException.class,
-                () -> portefeuilleRules.createPortefeuille(null)
-        );
-        var nullParamMessage = nullParamEx.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining());
-        assertThat(
-                "it must message exact message...",
-                nullParamMessage,
-                containsString("create request must not be null")
-        );
-
+        createPortefeuilleTest("null", 400)
+                .body("violations[0].message", containsString("create request must not be null"));
         //null name
-        var nullNameEx = Assertions.assertThrowsExactly(ConstraintViolationException.class,
-                () -> portefeuilleRules.createPortefeuille(
-                        new CreateRequest(null, "212", PortefeuilleStatus.ACTIVE)
-                )
-        );
-        var nullNameMessage = nullNameEx.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining());
-        assertThat(
-                "it must message exact message...",
-                nullNameMessage,
-                containsString("create request's old name must not be null or blank")
-        );
+        createPortefeuilleTest(new CreateRequest(null, "212", PortefeuilleStatus.ACTIVE), 400)
+                .body("violations[0].message",
+                        containsString("create request's old name must not be null or blank"));
 
         //null code
-        var nullCodeEx = Assertions.assertThrowsExactly(ConstraintViolationException.class,
-                () -> portefeuilleRules.createPortefeuille(
-                        new CreateRequest("df", null, PortefeuilleStatus.ACTIVE)
-                )
-        );
-        var nullCodeMessage = nullCodeEx.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining());
-        assertThat(
-                "it must message exact message...",
-                nullCodeMessage,
-                containsString("create request's new name must not be null or blank")
-        );
+        createPortefeuilleTest(new CreateRequest("df", null, PortefeuilleStatus.ACTIVE), 400)
+                .body("violations[0].message",
+                        containsString("create request's new name must not be null or blank"));
 
         //existing name
-        var exsitingNameEx = Assertions.assertThrowsExactly(ConstraintViolationException.class,
-                () -> portefeuilleRules.createPortefeuille(
-                        new CreateRequest(MFA_NAME, "323", PortefeuilleStatus.ACTIVE)
-                )
-        );
-        var existingNameMessage = exsitingNameEx.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining());
-        assertThat(
-                "it must message exact message...",
-                existingNameMessage,
-                containsString("create request's name and code must not be already taken")
-        );
+        createPortefeuilleTest(new CreateRequest(MFA_NAME, "323", PortefeuilleStatus.ACTIVE), 400)
+                .body("violations[0].message",
+                        containsString("create request's name and code must not be already taken"));
 
     }
 
     @Test
     @Order(3)
-    void test_active_portfeuille() {
-        var names = portefeuilleRules.relevantPortefeuilleNames(EnumSet.of(PortefeuilleStatus.ACTIVE));
-
-        assertThat(
-                "it must contains mf, mjs, mfa",
-                names,
-                containsInAnyOrder(MF_NAME, MJS_NAME, MFA_NAME)
-        );
+    void test_relevant_portefeuilles() {
+        given().when()
+                .queryParam("status", List.of(PortefeuilleStatus.ACTIVE))
+                .get("/names")
+                .then()
+                .statusCode(200)
+                .body("", hasItems("mf", "mfa", "mjs"));
+        
+        given().when()
+                .queryParam("status", List.of())
+                .get("/names")
+                .then()
+                .statusCode(200)
+                .body("", hasItems("mf", "mfa", "mjs"));
 
     }
 
     @Test
     @Order(4)
     void test_portefeuille_renaming() {
-        var mfad = portefeuilleRules.renamePortefeuille(new RenameRequest(MFA_NAME, MFAD_NAME));
+        //valid rename
+        var renameRequest = new RenameRequest(MFA_NAME, MFAD_NAME);
+        
+        given().when()
+                .contentType(ContentType.JSON)
+                .body(renameRequest)
+                .post("rename")
+                .then()
+                .statusCode(200)
+                .body("name", is(renameRequest.newName()))
+                .body("status", is(PortefeuilleStatus.ACTIVE.toString()))
+                .body("name", is(portefeuilleRules.portefeuilleByName(MF_NAME)
+                .map(Portefeuille::getCode)
+                .orElseThrow()));
+        var mfad = portefeuilleRules.renamePortefeuille();
         assertThat("mfad must be of renaming legal source type", mfad.getOriginatingEvent(),
                 is(LegalSourceType.RENAMING));
         var names = portefeuilleRules.relevantPortefeuilleNames(EnumSet.of(PortefeuilleStatus.ACTIVE));
@@ -295,11 +300,11 @@ public class PortfeuilleRepoTest {
                         .toList(),
                 containsInAnyOrder(MJS_NAME)
         );
-        
+
         var evolvings = portefeuilleRules.relevantPortefeuilleNames(EnumSet.of(PortefeuilleStatus.EVOLVING));
 
         assertThat("it must contain MJS", evolvings, containsInAnyOrder(MJS_NAME));
-        
+
         var incubatings = portefeuilleRules.relevantPortefeuilleNames(EnumSet.of(PortefeuilleStatus.INCUBATING));
         assertThat("it must contain MJS", incubatings, containsInAnyOrder(MJ_NAME, MS_NAME));
 
